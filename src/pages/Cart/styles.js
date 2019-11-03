@@ -9,7 +9,9 @@ export const Container = styled.View`
   margin: 104px 15px 0px 15px;
 `;
 
-export const CartProducts = styled.View``;
+export const ListProducts = styled.FlatList.attrs({
+  showsVerticalScrollIndicator: false,
+})``;
 
 export const CartProduct = styled.View``;
 

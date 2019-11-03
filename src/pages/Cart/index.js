@@ -10,7 +10,7 @@ import * as CartActions from '../../store/modules/cart/actions';
 
 import {
   Container,
-  CartProducts,
+  ListProducts,
   CartProduct,
   ProductInfo,
   ProductImage,
@@ -38,51 +38,63 @@ function Cart({ products, total, removeFromCart, updateAmountRequest }) {
     updateAmountRequest(product.id, product.amount - 1);
   }
 
-  return (
-    <Container>
-      <CartProducts>
-        {products.map(product => (
-          <CartProduct key={product.id}>
-            <ProductInfo>
-              <ProductImage source={{ uri: product.image }} />
-              <ProductDetail>
-                <ProductTitle>{product.title}</ProductTitle>
-                <ProductPrice>{product.priceFormatted}</ProductPrice>
-              </ProductDetail>
-              <ProductDelete onPress={() => removeFromCart(product.id)}>
-                <Icon name="delete-forever" color={colors.primary} size={20} />
-              </ProductDelete>
-            </ProductInfo>
-            <ProductAmount>
-              <ProductQuantity>
-                <ProductQuantityButton onPress={() => decrement(product)}>
-                  <Icon
-                    name="remove-circle-outline"
-                    color={colors.primary}
-                    size={20}
-                  />
-                </ProductQuantityButton>
-                <ProductQuantityText>{product.amount}</ProductQuantityText>
-                <ProductQuantityButton onPress={() => increment(product)}>
-                  <Icon
-                    name="add-circle-outline"
-                    color={colors.primary}
-                    size={20}
-                  />
-                </ProductQuantityButton>
-              </ProductQuantity>
-              <ProductPrice>{product.subtotal}</ProductPrice>
-            </ProductAmount>
-          </CartProduct>
-        ))}
-      </CartProducts>
+  function renderProduct({ item }) {
+    return (
+      <CartProduct key={item.id}>
+        <ProductInfo>
+          <ProductImage source={{ uri: item.image }} />
+          <ProductDetail>
+            <ProductTitle>{item.title}</ProductTitle>
+            <ProductPrice>{item.priceFormatted}</ProductPrice>
+          </ProductDetail>
+          <ProductDelete onPress={() => removeFromCart(item.id)}>
+            <Icon name="delete-forever" color={colors.primary} size={20} />
+          </ProductDelete>
+        </ProductInfo>
+        <ProductAmount>
+          <ProductQuantity>
+            <ProductQuantityButton onPress={() => decrement(item)}>
+              <Icon
+                name="remove-circle-outline"
+                color={colors.primary}
+                size={20}
+              />
+            </ProductQuantityButton>
+            <ProductQuantityText>{item.amount}</ProductQuantityText>
+            <ProductQuantityButton onPress={() => increment(item)}>
+              <Icon
+                name="add-circle-outline"
+                color={colors.primary}
+                size={20}
+              />
+            </ProductQuantityButton>
+          </ProductQuantity>
+          <ProductPrice>{item.subtotal}</ProductPrice>
+        </ProductAmount>
+      </CartProduct>
+    );
+  }
+
+  function renderFooter() {
+    return (
       <CartTotal>
         <CartTotalLabel>TOTAL</CartTotalLabel>
         <CartTotalPrice>{total}</CartTotalPrice>
+        <CartOrder>
+          <CartOrderLabel>FINALIZAR PEDIDO</CartOrderLabel>
+        </CartOrder>
       </CartTotal>
-      <CartOrder>
-        <CartOrderLabel>FINALIZAR PEDIDO</CartOrderLabel>
-      </CartOrder>
+    );
+  }
+
+  return (
+    <Container>
+      <ListProducts
+        data={products}
+        keyExtractor={item => String(item.id)}
+        renderItem={renderProduct}
+        ListFooterComponent={renderFooter}
+      />
     </Container>
   );
 }
